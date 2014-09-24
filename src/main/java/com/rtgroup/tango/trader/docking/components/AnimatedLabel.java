@@ -27,7 +27,7 @@ public class AnimatedLabel extends JLabel implements ActionListener {
 
     public AnimatedLabel(String text, Icon icon, int horizontalAlignment) {
         super(text, icon, horizontalAlignment);
-        animator = new Timer(10, this);
+        animator = new Timer(15, this);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -44,6 +44,11 @@ public class AnimatedLabel extends JLabel implements ActionListener {
             public void mouseExited(MouseEvent e) {
                 setForeground(_baseColor);
                 animator.stop();
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                System.out.println("mousedragged");
             }
         });
     }

@@ -1,34 +1,6 @@
 package com.rtgroup.tango.trader.docking.components;
 
-import com.rtgroup.tango.trader.docking.components.IconsStore.IconVariation;
-import com.rtgroup.tango.trader.docking.util.DockUtils;
-
-//~--- JDK imports ------------------------------------------------------------
-
-
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Path2D;
-import java.awt.image.BufferedImage;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +17,36 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.border.EtchedBorder;
+
+import com.rtgroup.tango.trader.docking.components.IconsStore.IconVariation;
+import com.rtgroup.tango.trader.docking.util.DockUtils;
+
+
+//~--- JDK imports ------------------------------------------------------------
+import java.awt.event.MouseEvent;
+import java.awt.Point;
+import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.geom.Path2D;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.Rectangle;
+import java.awt.event.ActionListener;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.BorderLayout;
+import java.awt.Font;
 
 //~--- classes ----------------------------------------------------------------
 
@@ -68,12 +69,13 @@ public class TitleBar extends JPanel {
     //~--- constructors -------------------------------------------------------
 
     public TitleBar(String title) {
-        super(new BorderLayout());
+        super();
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         WindowMoveListener wml = new WindowMoveListener();
 
         _label       = new AnimatedLabel(title, DEFAULT_ICON, SwingConstants.LEFT);
-        _buttonPanel = new JPanel();
+        _buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         _editorField = new JTextField(10);
 
         Font baseFont = _label.getFont();
@@ -92,6 +94,9 @@ public class TitleBar extends JPanel {
         _editorField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
+                if (e.getOppositeComponent() instanceof JFrame) {
+                    return;
+                }
                 if (isEditing) {
                     _label.setText(_animator.getOriginalLabelText());
                 }
@@ -135,12 +140,12 @@ public class TitleBar extends JPanel {
         });
 
         _editorField.setVisible(false);
+
+        add(_label);
         add(_editorField);
-
-
-        add(_label, BorderLayout.LINE_START);
-        add(new Box(BoxLayout.X_AXIS), BorderLayout.CENTER);
-        add(_buttonPanel, BorderLayout.LINE_END);
+        add(Box.createHorizontalStrut(30));
+        add(Box.createHorizontalGlue());
+        add(_buttonPanel);
 
         addMouseListener(wml);
         addMouseMotionListener(wml);
@@ -350,14 +355,13 @@ public class TitleBar extends JPanel {
 
         //~--- methods --------------------------------------------------------
 
-        @SuppressWarnings("restriction")
         @Override
         public void mouseDragged(MouseEvent e) {
             setWindow(e);
 
             if (compOffset != null) {
                 window.setLocation(e.getXOnScreen() - compOffset.x, e.getYOnScreen() - compOffset.y);
-                com.sun.awt.AWTUtilities.setWindowOpacity(window, 0.75f);
+                window.setOpacity(0.75f);
             }
         }
 
@@ -376,13 +380,12 @@ public class TitleBar extends JPanel {
             }
         }
 
-        @SuppressWarnings("restriction")
         @Override
         public void mouseReleased(MouseEvent e) {
             setWindow(e);
 
             if (compOffset != null) {
-                com.sun.awt.AWTUtilities.setWindowOpacity(window, 1f);
+                window.setOpacity(1.0f);
                 compOffset = null;
             }
         }

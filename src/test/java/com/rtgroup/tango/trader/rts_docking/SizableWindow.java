@@ -47,6 +47,9 @@ public class SizableWindow {
 
         JFrame.setDefaultLookAndFeelDecorated(false);
         frame.setUndecorated(true);
+        frame.setFocusable(false);
+        frame.setFocusCycleRoot(false);
+        frame.setFocusableWindowState(true);
 
         final JWindow window = new JWindow(frame) {
             @Override
