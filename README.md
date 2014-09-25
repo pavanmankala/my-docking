@@ -1,4 +1,4 @@
-rts-docking
+my-docking
 ===========
 
 my docking
